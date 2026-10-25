@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Galeri Tools - Guru Faizal</title>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var t = params.get('theme');
+      if (t === 'dark' || t === 'light') {
+        document.documentElement.setAttribute('data-theme', t);
+      }
+    })();
+  </script>
+  <style>
+    /* Variabel desain mengikuti Tema Guru Faizal v2.0 (Buku Tulis) */
+    :root {
+      --paper: #f5f8fc;
+      --card: #ffffff;
+      --surface-alt: #eef3fa;
+      --ink: #16233a;
+      --mut: #56657d;
+      --line: #dbe3ef;
+      --blue: #17305f;
+      --link: #1c4aa6;
+      --red: #d4263a;
+      --btn: #c91f33;
+      --btn-hover: #a81829;
+      --hl: #ffe45c;
+      --rule: #d3e3f7;
+      --wa-green: #128c4a;
+      --wa-hover: #0e6f3a;
+      --ok: #128c4a;
+      --warn: #b7791f;
+      --badge-ok: #dcfce7;
+      --badge-warn: #fef3c7;
+      --badge-err: #ffe4e6;
+      --serif: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+      --mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+      --r: 14px;
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --paper: #0c1424;
+        --card: #131f35;
+        --surface-alt: #182640;
+        --ink: #e8eef9;
+        --mut: #a3b3cb;
+        --line: #24324c;
+        --blue: #0a1122;
+        --link: #8fb6ff;
+        --red: #ff7b89;
+        --btn: #d4263a;
+        --btn-hover: #e1384b;
+        --rule: #1b2a45;
+        --badge-ok: #064e3b;
+        --badge-warn: #451a03;
+        --badge-err: #4c0519;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --paper: #0c1424;
+      --card: #131f35;
+      --surface-alt: #182640;
+      --ink: #e8eef9;
+      --mut: #a3b3cb;
+      --line: #24324c;
+      --blue: #0a1122;
+      --link: #8fb6ff;
+      --red: #ff7b89;
+      --btn: #d4263a;
+      --btn-hover: #e1384b;
+      --rule: #1b2a45;
+      --badge-ok: #064e3b;
+      --badge-warn: #451a03;
+      --badge-err: #4c0519;
+      color-scheme: dark;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font: 15px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: transparent;
+      color: var(--ink);
+    }
+    .shell {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+    .top-header {
+      background: var(--blue);
+      color: #ffffff;
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 3px solid var(--red);
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-mark {
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: var(--hl);
+      color: #16233a;
+      font: 800 0.82rem var(--serif);
+    }
+    .brand-wrap h1 {
+      margin: 0;
+      font: 700 1.15rem/1.2 var(--serif);
+      color: #ffffff;
+    }
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .top-btn {
+      min-height: 38px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font: 600 0.85rem system-ui, sans-serif;
+      cursor: pointer;
+    }
+    .top-btn:hover { background: rgba(255, 255, 255, 0.22); }
+    .top-btn.hl-btn {
+      background: var(--hl);
+      color: #16233a;
+      border-color: var(--hl);
+      font-weight: 700;
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      min-height: 600px;
+    }
+    @media (max-width: 820px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+    }
+
+    /* SIDEBAR KIRI */
+    .sidebar {
+      background: var(--surface-alt);
+      border-right: 1px solid var(--line);
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .timer-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--link);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .timer-card.expired-card {
+      border-top-color: var(--red);
+    }
+    .timer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--mut);
+      margin-bottom: 6px;
+    }
+    .timer-val {
+      font-family: var(--mono);
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+    .timer-bar {
+      height: 8px;
+      background: var(--rule);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .timer-fill {
+      height: 100%;
+      background: var(--link);
+      transition: width 250ms ease, background-color 250ms ease;
+    }
+    .timer-fill.warn { background: var(--warn); }
+    .timer-fill.expired { background: var(--red); }
+    .timer-sub {
+      font-size: 0.78rem;
+      color: var(--mut);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+    .nav-group-label {
+      font: 700 0.76rem var(--serif);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--mut);
+      padding: 0 6px 4px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 6px;
+    }
+    .side-nav {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 5px;
+    }
+    .side-btn {
+      width: 100%;
+      min-height: 44px;
+      text-align: left;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      font: 600 0.9rem system-ui, sans-serif;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .side-btn:hover {
+      background: var(--card);
+      border-color: var(--line);
+    }
+    .side-btn.active {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+    }
+
+    /* STATE ABU-ABU SAAT TRIAL 1 HARI HABIS */
+    .side-btn.locked-tool {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--mut);
+      border: 1px dashed var(--line);
+      filter: grayscale(100%);
+      opacity: 0.62;
+      cursor: not-allowed;
+    }
+    .side-btn.locked-tool:hover {
+      border-color: var(--red);
+      color: var(--red);
+      opacity: 0.9;
+    }
+    .tool-badge {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--rule);
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .side-btn.active .tool-badge {
+      background: var(--hl);
+      color: #16233a;
+      font-weight: 700;
+    }
+    .side-btn.locked-tool .tool-badge {
+      background: var(--line);
+      color: var(--mut);
+    }
+
+    .main-stage {
+      padding: clamp(16px, 3vw, 28px);
+      background: var(--paper);
+    }
+    .auth-wrap {
+      max-width: 480px;
+      margin: 18px auto;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: clamp(16px, 2.5vw, 24px);
+      margin-bottom: 16px;
+    }
+    .card h2, .card h3 {
+      margin: 0 0 6px;
+      font: 700 1.22rem/1.3 var(--serif);
+      color: var(--ink);
+    }
+    .card-sub {
+      margin: 0 0 16px;
+      color: var(--mut);
+      font-size: 0.92rem;
+    }
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: var(--surface-alt);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      margin-bottom: 18px;
+    }
+    .auth-tab {
+      min-height: 40px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--mut);
+      font: 700 0.9rem system-ui, sans-serif;
+      cursor: pointer;
+    }
+    .auth-tab[aria-selected="true"] {
+      background: var(--blue);
+      color: #ffffff;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+    .field { margin-bottom: 12px; }
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 5px;
+    }
+    input, select, textarea {
+      width: 100%;
+      min-height: 44px;
+      font: inherit;
+      color: var(--ink);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--link);
+      background: var(--card);
+      outline: none;
+    }
+    input[aria-invalid="true"] { border-color: var(--red); }
+    :focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
+    .field-err {
+      color: var(--red);
+      font-size: 0.8rem;
+      margin-top: 4px;
+      min-height: 1.1em;
+    }
+    .pwd-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .pwd-wrap input { padding-right: 74px; }
+    .pwd-toggle {
+      position: absolute;
+      right: 6px;
+      min-height: 32px;
+      padding: 2px 8px;
+      font-size: 0.78rem;
+      background: var(--card);
+      color: var(--mut);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button.primary, button.secondary, button.wa-btn, button.danger-btn, button.ghost-btn {
+      min-height: 44px;
+      padding: 8px 18px;
+      font: 700 0.92rem system-ui, sans-serif;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background-color 150ms ease, opacity 150ms ease;
+    }
+    button.primary { background: var(--btn); color: #ffffff; }
+    button.primary:hover:not([disabled]) { background: var(--btn-hover); }
+    button.secondary { background: var(--surface-alt); color: var(--ink); border-color: var(--line); border-radius: 10px; }
+    button.wa-btn, a.wa-btn {
+      min-height: 46px;
+      padding: 10px 20px;
+      background: var(--wa-green);
+      color: #ffffff;
+      border-radius: 999px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    button.wa-btn:hover, a.wa-btn:hover { background: var(--wa-hover); text-decoration: none; }
+    button.danger-btn { background: var(--badge-err); color: var(--red); border-color: var(--red); border-radius: 10px; }
+    button.ghost-btn {
+      min-height: 36px;
+      padding: 4px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: var(--surface-alt);
+      color: var(--ink);
+      border-color: var(--line);
+      border-radius: 8px;
+    }
+    button[disabled] { opacity: 0.55; cursor: progress; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
+    .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    .banner {
+      padding: 10px 16px;
+      border-radius: 10px;
+      margin: 12px 16px 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+    .banner:empty { display: none; }
+    .banner.error { background: var(--badge-err); color: var(--red); border-color: var(--red); }
+    .banner.ok { background: var(--badge-ok); color: var(--ok); border-color: var(--ok); }
+    .banner.warn { background: var(--badge-warn); color: var(--warn); border-color: var(--warn); }
+
+    .tool-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--rule);
+      margin-bottom: 16px;
+    }
+    .result-box {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--link);
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 14px;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .ext-iframe {
+      width: 100%;
+      min-height: 460px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--link);
+      border-radius: var(--r);
+      padding: 12px 14px;
+    }
+    .stat-card span { display: block; font-size: 0.8rem; color: var(--mut); }
+    .stat-card strong { font-family: var(--mono); font-size: 1.45rem; }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 780px; font-size: 0.86rem; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: var(--surface-alt); color: var(--mut); font-weight: 700; white-space: nowrap; }
+    .mono { font-family: var(--mono); }
+    .pill {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .pill.ok { background: var(--badge-ok); color: var(--ok); }
+    .pill.warn { background: var(--badge-warn); color: var(--warn); }
+    .pill.err { background: var(--badge-err); color: var(--red); }
+
+    dialog {
+      background: var(--card);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--red);
+      border-radius: var(--r);
+      padding: 22px;
+      width: min(92vw, 540px);
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+    }
+    dialog::backdrop { background: rgba(12, 20, 36, 0.65); }
+    .dlg-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      border-bottom: 2px solid var(--rule);
+    }
+    .dlg-head h3 { margin: 0; font: 700 1.15rem var(--serif); }
+    .skeleton {
+      height: 56px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--line) 25%, var(--surface-alt) 50%, var(--line) 75%);
+      background-size: 200% 100%;
+      animation: sk 1.2s linear infinite;
+    }
+    @keyframes sk { to { background-position: -200% 0; } }
+    @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
+  </style>
+</head>
+<body>
+
+<section class="shell" aria-label="Galeri Tools Guru Faizal">
+  <header class="top-header">
+    <div class="brand-wrap">
+      <span class="brand-mark">GF</span>
+      <h1>Galeri Tools &amp; Area Pelanggan</h1>
+      <span id="user-greeting" class="pill ok" style="display:none"></span>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="top-btn" id="btn-mode-portal">Galeri Tools</button>
+      <button type="button" class="top-btn" id="btn-mode-admin">Panel Admin</button>
+      <button type="button" class="top-btn hl-btn" id="btn-logout" style="display:none">Keluar Akun</button>
+    </div>
+  </header>
+
+  <div id="global-banner" class="banner" role="status" aria-live="polite"></div>
+
+  <!-- VIEW 1: LOGIN & DAFTAR PELANGGAN -->
+  <div id="view-auth" class="main-stage">
+    <div class="auth-wrap">
+      <div class="card">
+        <div class="auth-tabs" role="tablist">
+          <button type="button" class="auth-tab" id="tab-login" role="tab" aria-selected="true">Login Pelanggan</button>
+          <button type="button" class="auth-tab" id="tab-register" role="tab" aria-selected="false">Daftar Trial 1 Hari</button>
+        </div>
+
+        <!-- FORM LOGIN -->
+        <form id="form-login" novalidate>
+          <h2>Masuk ke Galeri Tools</h2>
+          <p class="card-sub">Gunakan alamat email yang sudah Anda daftarkan beserta password Anda.</p>
+          <div class="field">
+            <label for="l-email">Username (Alamat Email)</label>
+            <input id="l-email" name="email" type="email" required placeholder="nama@email.com" autocomplete="username">
+            <div class="field-err" id="err-l-email"></div>
+          </div>
+          <div class="field">
+            <label for="l-pwd">Password</label>
+            <div class="pwd-wrap">
+              <input id="l-pwd" name="password" type="password" required placeholder="Masukkan password Anda" autocomplete="current-password">
+              <button type="button" class="pwd-toggle" data-target="l-pwd">Lihat</button>
+            </div>
+            <div class="field-err" id="err-l-pwd"></div>
+          </div>
+          <input class="hp" name="_hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="btn-row">
+            <button type="submit" class="primary" id="btn-submit-login" style="width:100%">Masuk &amp; Buka Galeri Tools</button>
+          </div>
+        </form>
+
+        <!-- FORM DAFTAR -->
+        <form id="form-register" style="display:none" novalidate>
+          <h2>Pendaftaran Pelanggan Baru</h2>
+          <p class="card-sub">Daftar gratis untuk langsung mendapatkan <strong>Akses Trial 1 Hari (24 Jam)</strong> ke seluruh tools tanpa batas generate.</p>
+          <div class="field">
+            <label for="r-name">Nama Lengkap</label>
+            <input id="r-name" name="full_name" required maxlength="100" placeholder="Nama lengkap Anda">
+            <div class="field-err" id="err-r-name"></div>
+          </div>
+          <div class="field">
+            <label for="r-email">Alamat Email (Digunakan sebagai Username Login)</label>
+            <input id="r-email" name="email" type="email" required maxlength="120" placeholder="nama@email.com">
+            <div class="field-err" id="err-r-email"></div>
+          </div>
+          <div class="field">
+            <label for="r-wa">Nomor WhatsApp Aktif</label>
+            <input id="r-wa" name="whatsapp" type="tel" required maxlength="20" placeholder="081234567890">
+            <div class="field-err" id="err-r-wa"></div>
+          </div>
+          <div class="field">
+            <label for="r-pwd">Password (Wajib kombinasi huruf &amp; angka, minimal 8 karakter)</label>
+            <div class="pwd-wrap">
+              <input id="r-pwd" name="password" type="password" required minlength="8" placeholder="Contoh: berkah123">
+              <button type="button" class="pwd-toggle" data-target="r-pwd">Lihat</button>
+            </div>
+            <div class="field-err" id="err-r-pwd"></div>
+          </div>
+          <input class="hp" name="_hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="btn-row">
+            <button type="submit" class="primary" id="btn-submit-register" style="width:100%">Daftar &amp; Aktifkan Trial 1 Hari</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: WORKSPACE PELANGGAN (SIDEBAR KIRI + AREA KERJA KANAN) -->
+  <div id="view-workspace" class="workspace-grid" style="display:none">
+    <aside class="sidebar" aria-label="Menu Navigasi Galeri Tools">
+      <div class="timer-card" id="sb-timer-card">
+        <div class="timer-head">
+          <span>Masa Aktif Akses</span>
+          <span id="sb-timer-text" class="timer-val">24j 0m</span>
+        </div>
+        <div class="timer-bar">
+          <div id="sb-timer-fill" class="timer-fill" style="width:100%"></div>
+        </div>
+        <div id="sb-timer-desc" class="timer-sub">Bebas pakai seluruh tools selama masa aktif berlangsung.</div>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Menu Akun</div>
+        <ul class="side-nav">
+          <li>
+            <button type="button" class="side-btn" id="nav-profile">
+              <span>Profil &amp; Status Akun</span>
+              <span class="tool-badge">Buka</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-label">Daftar Galeri Tools</div>
+        <ul class="side-nav" id="sb-tools-list"></ul>
+      </div>
+    </aside>
+
+    <main class="main-stage" id="stage-content"></main>
+  </div>
+
+  <!-- VIEW 3: PANEL ADMIN FULL CRUD -->
+  <div id="view-admin" class="main-stage" style="display:none">
+    <div class="card" id="admin-login-box">
+      <h2>Otorisasi Panel Admin</h2>
+      <p class="card-sub">Masukkan <code>ADMIN_TOKEN</code> dari Google Apps Script untuk mengelola pelanggan, masa aktif, dan katalog tools.</p>
+      <form id="form-admin-auth" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="adm-token">Token Admin</label>
+            <input id="adm-token" type="password" required placeholder="Tempel ADMIN_TOKEN di sini">
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="primary">Buka Panel Admin</button>
+          <button type="button" class="secondary" id="btn-adm-logout" style="display:none">Tutup Sesi Admin</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="admin-main-area" style="display:none">
+      <div class="stats-grid">
+        <div class="stat-card"><span>Total Pelanggan</span><strong id="adm-st-total">0</strong></div>
+        <div class="stat-card"><span>Trial 1 Hari Aktif</span><strong id="adm-st-free">0</strong></div>
+        <div class="stat-card"><span>Trial Habis (Expired)</span><strong id="adm-st-exhausted">0</strong></div>
+        <div class="stat-card"><span>Member Pro / Beli Tool</span><strong id="adm-st-paid">0</strong></div>
+      </div>
+
+      <div class="card">
+        <div class="tool-header">
+          <div>
+            <h3>Manajemen Pelanggan, Masa Aktif &amp; Pembelian Tools</h3>
+            <p class="card-sub" style="margin:0">Kelola data pelanggan, lihat/edit password, perpanjang masa aktif (+1 hari, +30 hari, lifetime), atau catat pembelian tool satuan.</p>
+          </div>
+          <div class="btn-row" style="margin:0">
+            <button type="button" class="secondary" id="btn-adm-reload">Muat Ulang</button>
+            <button type="button" class="primary" id="btn-adm-add-cust">+ Tambah Pelanggan</button>
+          </div>
+        </div>
+
+        <div class="form-grid" style="margin-bottom:14px">
+          <input id="adm-q" type="search" placeholder="Cari nama, email, WA, atau kode tool...">
+          <select id="adm-filter">
+            <option value="all">Semua Status Pelanggan</option>
+            <option value="expired">Masa Aktif Trial Habis (Perlu Follow-up)</option>
+            <option value="paid">Sudah Upgrade / Beli Tool</option>
+            <option value="trial_active">Trial 1 Hari Sedang Aktif</option>
+          </select>
+        </div>
+
+        <div id="adm-customers-table"></div>
+      </div>
+
+      <div class="card">
+        <div class="tool-header">
+          <div>
+            <h3>Katalog Tools Sidebar &amp; Nomor WhatsApp Upgrade</h3>
+            <p class="card-sub" style="margin:0">Tambahkan tool dari folder GitHub (<code>./tools/nama-file.html</code>) atau link Canvas Gemini ke daftar sidebar.</p>
+          </div>
+          <button type="button" class="primary" id="btn-adm-add-tool">+ Tambah Tool ke Sidebar</button>
+        </div>
+
+        <form id="form-adm-settings" style="margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line)">
+          <div class="form-grid">
+            <div class="field">
+              <label for="set-wa">Nomor WhatsApp Admin (Awali 628...)</label>
+              <input id="set-wa" required placeholder="6281234567890">
+            </div>
+            <div class="field">
+              <label for="set-price-info">Info Harga pada Popup Upgrade</label>
+              <input id="set-price-info" placeholder="Upgrade ke Pro Rp 99.000/bulan atau Beli Tool Satuan">
+            </div>
+          </div>
+          <button type="submit" class="secondary" id="btn-save-settings">Simpan Pengaturan WhatsApp</button>
+        </form>
+
+        <div id="adm-tools-table"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL WAJIB UPGRADE SAAT SIDEBAR ABU-ABU DIKLIK -->
+  <dialog id="dlg-upgrade">
+    <div class="dlg-head">
+      <h3>Masa Aktif Trial 1 Hari Telah Berakhir</h3>
+      <button type="button" class="ghost-btn" id="btn-close-upgrade">Tutup</button>
+    </div>
+    <p id="upg-message" style="margin-top:0"></p>
+    <div class="card" style="background:var(--surface-alt);margin-bottom:16px">
+      <div style="font-size:0.85rem;color:var(--mut)">Informasi Paket Upgrade:</div>
+      <strong id="upg-price-box" style="display:block;margin-top:4px"></strong>
+    </div>
+    <div class="btn-row">
+      <a id="upg-wa-link" class="wa-btn" href="https://wa.me/" target="_blank" rel="noopener noreferrer" style="width:100%">
+        Hubungi WhatsApp Admin untuk Upgrade Sekarang
+      </a>
+    </div>
+  </dialog>
+
+  <!-- MODAL ADMIN: FORM PELANGGAN -->
+  <dialog id="dlg-adm-cust">
+    <div class="dlg-head">
+      <h3 id="dlg-cust-title">Kelola Pelanggan</h3>
+      <button type="button" class="ghost-btn" id="btn-close-cust-dlg">Tutup</button>
+    </div>
+    <form id="form-adm-cust" novalidate>
+      <input type="hidden" id="mc-id">
+      <div class="form-grid">
+        <div class="field">
+          <label for="mc-name">Nama Lengkap</label>
+          <input id="mc-name" required maxlength="100">
+        </div>
+        <div class="field">
+          <label for="mc-email">Email (Username Login)</label>
+          <input id="mc-email" type="email" required maxlength="120">
+        </div>
+        <div class="field">
+          <label for="mc-wa">Nomor WhatsApp</label>
+          <input id="mc-wa" required maxlength="25">
+        </div>
+        <div class="field">
+          <label for="mc-pwd">Password (Huruf + Angka Min 8 Karakter)</label>
+          <input id="mc-pwd" type="text" required minlength="8">
+        </div>
+        <div class="field">
+          <label for="mc-tier">Tipe Paket Pelanggan</label>
+          <select id="mc-tier">
+            <option value="trial">Trial (1 Hari / 24 Jam)</option>
+            <option value="satuan">Beli Tool Satuan</option>
+            <option value="pro_bulanan">Pro Bulanan (All-Access 30 Hari)</option>
+            <option value="pro_tahunan">Pro Tahunan (All-Access 365 Hari)</option>
+            <option value="lifetime">Lifetime (All-Access Selamanya)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="mc-status">Status Akun</label>
+          <select id="mc-status">
+            <option value="active">Active (Aktif)</option>
+            <option value="suspended">Suspended (Dibekukan)</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="mc-add-days">Tambah / Perpanjang Masa Aktif (Hari, opsional)</label>
+        <input id="mc-add-days" type="number" min="0" max="3650" placeholder="Isi 1 untuk tambah 1 hari, 30 untuk 1 bulan, kosongkan jika tidak diubah">
+      </div>
+      <div class="field">
+        <label for="mc-purchased">Pembelian Tools Milik Pelanggan (isi <code>all</code> atau pisahkan dengan koma)</label>
+        <input id="mc-purchased" placeholder="Contoh: generator-prompt,kalkulator-hpp atau all">
+      </div>
+      <div class="field">
+        <label for="mc-notes">Catatan Pembayaran / Admin</label>
+        <textarea id="mc-notes" maxlength="500"></textarea>
+      </div>
+      <div class="btn-row">
+        <button type="submit" class="primary" id="btn-save-cust">Simpan Data Pelanggan</button>
+        <button type="button" class="secondary" id="btn-extend-1day">+1 Hari Trial</button>
+        <button type="button" class="danger-btn" id="btn-expire-now">Akhiri Trial Sekarang</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- MODAL ADMIN: FORM TOOL -->
+  <dialog id="dlg-adm-tool">
+    <div class="dlg-head">
+      <h3 id="dlg-tool-title">Kelola Tool di Sidebar</h3>
+      <button type="button" class="ghost-btn" id="btn-close-tool-dlg">Tutup</button>
+    </div>
+    <form id="form-adm-tool" novalidate>
+      <input type="hidden" id="mt-id">
+      <div class="form-grid">
+        <div class="field">
+          <label for="mt-title">Nama Tool (Tampil di Sidebar)</label>
+          <input id="mt-title" required maxlength="100" placeholder="Contoh: 6. Generator Modul Ajar">
+        </div>
+        <div class="field">
+          <label for="mt-slug">Kode Unik / Slug Tool</label>
+          <input id="mt-slug" required maxlength="60" placeholder="generator-modul-ajar">
+        </div>
+        <div class="field">
+          <label for="mt-cat">Kategori</label>
+          <input id="mt-cat" maxlength="50" value="Tools AI">
+        </div>
+        <div class="field">
+          <label for="mt-price">Label Harga Satuan</label>
+          <input id="mt-price" maxlength="60" value="Rp 35.000">
+        </div>
+        <div class="field">
+          <label for="mt-type">Sumber Kode Tool</label>
+          <select id="mt-type">
+            <option value="github_url">File di Folder GitHub (./tools/nama-file.html)</option>
+            <option value="external_link">Link Canvas Gemini / Tab Eksternal</option>
+            <option value="builtin">Modul Bawaan (Built-in)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="mt-order">Urutan di Sidebar</label>
+          <input id="mt-order" type="number" min="1" max="999" value="6">
+        </div>
+      </div>
+      <div class="field">
+        <label for="mt-url">Path File GitHub atau Link Canvas Gemini</label>
+        <input id="mt-url" placeholder="./tools/generator-modul.html atau https://gemini.google.com/...">
+      </div>
+      <div class="field">
+        <label for="mt-desc">Deskripsi Singkat Tool</label>
+        <textarea id="mt-desc" maxlength="300"></textarea>
+      </div>
+      <div class="btn-row">
+        <button type="submit" class="primary" id="btn-save-tool">Simpan Tool ke Galeri</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- MODAL KONFIRMASI HAPUS -->
+  <dialog id="dlg-confirm">
+    <div class="dlg-head">
+      <h3>Konfirmasi Penghapusan</h3>
+    </div>
+    <p id="confirm-msg"></p>
+    <div class="btn-row">
+      <button type="button" class="danger-btn" id="btn-confirm-yes">Ya, Hapus</button>
+      <button type="button" class="secondary" id="btn-confirm-no">Batal</button>
+    </div>
+  </dialog>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  // Ganti dengan URL Web App (/exec) dari Google Apps Script Anda:
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzOMoFvIr71lqM5aiLQZqC0UnMl9bjCHhCt8tcwl6mzGFLbwj30AoZrRRCRyCo-GHsG/exec';
+
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+  function notifyParentHeight() {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'GT_APP_RESIZE',
+        height: document.documentElement.scrollHeight
+      }, '*');
+    }
+  }
+  if (window.ResizeObserver) {
+    new ResizeObserver(notifyParentHeight).observe(document.body);
+  }
+  window.addEventListener('load', notifyParentHeight);
+
+  function uid() {
+    return (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : Date.now() + '-' + Math.random().toString(16).slice(2);
+  }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  var clientId = (function () {
+    try {
+      var k = localStorage.getItem('gt_cid');
+      if (!k) { k = uid(); localStorage.setItem('gt_cid', k); }
+      return k;
+    } catch (e) { return uid(); }
+  })();
+
+  var state = {
+    sessionToken: (function () { try { return localStorage.getItem('gt_sess') || ''; } catch (e) { return ''; } })(),
+    adminToken: (function () { try { return sessionStorage.getItem('gt_adm') || ''; } catch (e) { return ''; } })(),
+    customer: null,
+    catalog: {
+      admin_whatsapp: '6281234567890',
+      upgrade_price_info: 'Paket Pro All-Access Rp 99.000/bulan atau Beli Tool Satuan mulai Rp 35.000',
+      tools: []
+    },
+    activeNav: 'profile',
+    adminCustomers: [],
+    adminTools: [],
+    confirmAction: null,
+    expireNowFlag: false
+  };
+
+  function el(tag, text, cls) {
+    var n = document.createElement(tag);
+    if (text !== null && text !== undefined) n.textContent = text;
+    if (cls) n.className = cls;
+    return n;
+  }
+
+  function setBanner(msg, type) {
+    var b = $('#global-banner');
+    b.textContent = msg || '';
+    b.className = 'banner' + (type ? ' ' + type : '');
+    notifyParentHeight();
+  }
+
+  function hasValidPasswordFormat(pwd) {
+    var s = String(pwd || '');
+    return s.length >= 8 && /[a-zA-Z]/.test(s) && /[0-9]/.test(s);
+  }
+
+  function fmtDateId(iso) {
+    if (!iso) return '-';
+    if (String(iso).indexOf('2099-') === 0) return 'Selamanya (Lifetime)';
+    try {
+      return new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+        timeZone: 'Asia/Jakarta'
+      }).format(new Date(iso));
+    } catch (e) { return String(iso); }
+  }
+
+  // Hitung sisa waktu real-time di browser
+  function getRemainingTimeInfo(c) {
+    if (!c) return { expired: true, label: 'Habis', pct: 0 };
+    var purchased = c.purchased_list || [];
+    if (c.tier === 'lifetime' || purchased.indexOf('all') !== -1 || purchased.indexOf('*') !== -1) {
+      return { expired: false, unlimited: true, label: 'LIFETIME', pct: 100 };
+    }
+    var expMs = c.expires_at ? new Date(c.expires_at).getTime() : 0;
+    var diff = expMs - Date.now();
+    if (!isFinite(expMs) || diff <= 0) {
+      return { expired: true, unlimited: false, label: 'HABIS (0j 0m)', pct: 0 };
+    }
+    var totalMinutes = Math.floor(diff / 60000);
+    var days = Math.floor(totalMinutes / 1440);
+    var hours = Math.floor((totalMinutes % 1440) / 60);
+    var mins = totalMinutes % 60;
+    var label = days > 0 ? (days + 'h ' + hours + 'j ' + mins + 'm') : (hours + 'j ' + mins + 'm');
+    var windowMs = 24 * 3600000;
+    var pct = Math.min(Math.max(Math.round((diff / windowMs) * 100), 4), 100);
+    return { expired: false, unlimited: false, label: 'Sisa ' + label, pct: pct };
+  }
+
+  async function api(action, payload, cfg) {
+    var optsCfg = cfg || {};
+    var isPost = Boolean(optsCfg.post || optsCfg.token || optsCfg.requestId);
+    var tries = isPost ? 1 : 3;
+    var lastErr;
+
+    for (var i = 0; i < tries; i++) {
+      var ctrl = new AbortController();
+      var timer = setTimeout(function () { ctrl.abort(); }, 20000);
+      try {
+        var url = API_URL;
+        var fetchOpts = { redirect: 'follow', signal: ctrl.signal };
+        if (isPost) {
+          fetchOpts.method = 'POST';
+          fetchOpts.headers = { 'Content-Type': 'text/plain;charset=utf-8' };
+          fetchOpts.body = JSON.stringify({
+            action: action,
+            payload: payload || {},
+            token: optsCfg.token || '',
+            request_id: optsCfg.requestId || '',
+            client_id: clientId
+          });
+        } else {
+          url += '?' + new URLSearchParams(Object.assign({ action: action }, payload || {})).toString();
+        }
+        var res = await fetch(url, fetchOpts);
+        var json = await res.json();
+        if (!json.ok) {
+          var e = new Error(json.error && json.error.message ? json.error.message : 'Permintaan ditolak.');
+          e.code = json.error && json.error.code;
+          e.final = true;
+          throw e;
+        }
+        return json.data;
+      } catch (err) {
+        lastErr = err;
+        if (err.name === 'AbortError') lastErr = new Error('Waktu tunggu server habis (20 detik). Silakan coba lagi.');
+        else if (err.name === 'SyntaxError') lastErr = new Error('Respons server bukan JSON. Pastikan Web App di-deploy dengan akses "Anyone".');
+        else if (err.name === 'TypeError') lastErr = new Error('Gagal terhubung ke server Apps Script. Periksa API_URL dan koneksi internet.');
+        if (lastErr.final || i === tries - 1) break;
+        await sleep(600 * (i + 1));
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+    throw lastErr;
+  }
+
+  function ensureApiConfigured() {
+    if (API_URL.indexOf('GANTI_') === 0) {
+      setBanner('API_URL di dalam index.html GitHub belum diisi dengan URL Web App (/exec) Anda.', 'error');
+      return false;
+    }
+    return true;
+  }
+
+  $$('.pwd-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var input = $('#' + btn.getAttribute('data-target'));
+      if (!input) return;
+      var isPwd = input.type === 'password';
+      input.type = isPwd ? 'text' : 'password';
+      btn.textContent = isPwd ? 'Sembunyi' : 'Lihat';
+    });
+  });
+
+  $('#tab-login').addEventListener('click', function () {
+    $('#tab-login').setAttribute('aria-selected', 'true');
+    $('#tab-register').setAttribute('aria-selected', 'false');
+    $('#form-login').style.display = 'block';
+    $('#form-register').style.display = 'none';
+    setBanner('', '');
+  });
+  $('#tab-register').addEventListener('click', function () {
+    $('#tab-register').setAttribute('aria-selected', 'true');
+    $('#tab-login').setAttribute('aria-selected', 'false');
+    $('#form-register').style.display = 'block';
+    $('#form-login').style.display = 'none';
+    setBanner('', '');
+  });
+
+  function switchMainView(viewName) {
+    $('#view-auth').style.display = 'none';
+    $('#view-workspace').style.display = 'none';
+    $('#view-admin').style.display = 'none';
+    setBanner('', '');
+
+    if (viewName === 'admin') {
+      $('#view-admin').style.display = 'block';
+      syncAdminView();
+      notifyParentHeight();
+      return;
+    }
+    if (state.customer && state.sessionToken) {
+      $('#view-workspace').style.display = 'grid';
+      $('#btn-logout').style.display = 'inline-flex';
+      $('#user-greeting').style.display = 'inline-block';
+      $('#user-greeting').textContent = state.customer.full_name + ' (' + String(state.customer.tier).toUpperCase() + ')';
+      renderSidebarAndStage();
+    } else {
+      $('#view-auth').style.display = 'block';
+      $('#btn-logout').style.display = 'none';
+      $('#user-greeting').style.display = 'none';
+    }
+    notifyParentHeight();
+  }
+
+  $('#btn-mode-portal').addEventListener('click', function () { switchMainView('portal'); });
+  $('#btn-mode-admin').addEventListener('click', function () { switchMainView('admin'); });
+  $('#btn-logout').addEventListener('click', function () {
+    state.sessionToken = '';
+    state.customer = null;
+    try { localStorage.removeItem('gt_sess'); } catch (e) {}
+    switchMainView('portal');
+    setBanner('Anda telah keluar dari sesi pelanggan.', '');
+  });
+
+  function setFieldErr(inputEl, errEl, msg) {
+    if (msg) {
+      inputEl.setAttribute('aria-invalid', 'true');
+      errEl.textContent = msg;
+      return false;
+    }
+    inputEl.removeAttribute('aria-invalid');
+    errEl.textContent = '';
+    return true;
+  }
+
+  function validateRegisterInputs() {
+    var ok = true;
+    var n = $('#r-name');
+    var e = $('#r-email');
+    var w = $('#r-wa');
+    var p = $('#r-pwd');
+
+    if (n.value.trim().length < 2) {
+      ok = setFieldErr(n, $('#err-r-name'), 'Nama lengkap wajib diisi (minimal 2 karakter).') && ok;
+    } else setFieldErr(n, $('#err-r-name'), '');
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.value.trim())) {
+      ok = setFieldErr(e, $('#err-r-email'), 'Masukkan format alamat email yang benar.') && ok;
+    } else setFieldErr(e, $('#err-r-email'), '');
+
+    var cleanWa = w.value.replace(/[^\d+]/g, '');
+    if (cleanWa.length < 9 || cleanWa.length > 20) {
+      ok = setFieldErr(w, $('#err-r-wa'), 'Nomor WhatsApp harus 9 hingga 20 digit angka.') && ok;
+    } else setFieldErr(w, $('#err-r-wa'), '');
+
+    if (!hasValidPasswordFormat(p.value)) {
+      ok = setFieldErr(p, $('#err-r-pwd'), 'Password wajib minimal 8 karakter serta mengandung huruf dan angka.') && ok;
+    } else setFieldErr(p, $('#err-r-pwd'), '');
+
+    return ok;
+  }
+
+  ['#r-name', '#r-email', '#r-wa', '#r-pwd'].forEach(function (sel) {
+    $(sel).addEventListener('blur', validateRegisterInputs);
+  });
+
+  var regReqId = null;
+  $('#form-register').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    if (!ensureApiConfigured()) return;
+    if (!validateRegisterInputs()) return;
+
+    var btn = $('#btn-submit-register');
+    regReqId = regReqId || uid();
+    btn.disabled = true;
+    setBanner('Mendaftarkan akun dan mengaktifkan Trial 1 Hari (24 Jam)...', '');
+
+    try {
+      var payload = Object.fromEntries(new FormData(ev.target));
+      var res = await api('customers.register', payload, { post: true, requestId: regReqId });
+      regReqId = null;
+      ev.target.reset();
+      saveSessionAndEnter(res, 'Pendaftaran berhasil! Akses Trial 1 Hari (24 Jam) Anda langsung aktif untuk semua tools.');
+    } catch (err) {
+      setBanner(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  $('#form-login').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    if (!ensureApiConfigured()) return;
+    var emailIn = $('#l-email');
+    var pwdIn = $('#l-pwd');
+    if (!emailIn.value.trim() || !pwdIn.value) {
+      setBanner('Masukkan email dan password Anda terlebih dahulu.', 'error');
+      return;
+    }
+    var btn = $('#btn-submit-login');
+    btn.disabled = true;
+    setBanner('Memverifikasi akun pelanggan...', '');
+
+    try {
+      var res = await api('customers.login', {
+        email: emailIn.value.trim(),
+        password: pwdIn.value
+      }, { post: true, requestId: uid() });
+      pwdIn.value = '';
+      saveSessionAndEnter(res, 'Selamat datang kembali, ' + res.customer.full_name + '!');
+    } catch (err) {
+      setBanner(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  function saveSessionAndEnter(res, welcomeMsg) {
+    state.sessionToken = res.session_token;
+    state.customer = res.customer;
+    if (res.catalog) state.catalog = res.catalog;
+    try { localStorage.setItem('gt_sess', state.sessionToken); } catch (e) {}
+    var firstTool = state.catalog.tools && state.catalog.tools[0];
+    if (firstTool && canAccessTool(firstTool.slug)) {
+      state.activeNav = firstTool.slug;
+    } else {
+      state.activeNav = 'profile';
+    }
+    switchMainView('portal');
+    if (welcomeMsg) setBanner(welcomeMsg, 'ok');
+  }
+
+  // Cek apakah suatu tool boleh diakses berdasarkan Masa Aktif Trial 1 Hari atau Pembelian Satuan
+  function canAccessTool(toolSlug) {
+    var c = state.customer;
+    if (!c) return false;
+    var purchased = c.purchased_list || [];
+    if (c.tier === 'lifetime' || purchased.indexOf(toolSlug) !== -1 || purchased.indexOf('all') !== -1 || purchased.indexOf('*') !== -1) {
+      return true;
+    }
+    var tInfo = getRemainingTimeInfo(c);
+    return !tInfo.expired;
+  }
+
+  // Perbarui hitung mundur setiap 30 detik agar otomatis mengunci saat lewat 24 jam
+  setInterval(function () {
+    if (state.customer && state.sessionToken && $('#view-workspace').style.display !== 'none') {
+      var prevExpired = state.customer.is_trial_expired;
+      var tInfo = getRemainingTimeInfo(state.customer);
+      state.customer.is_trial_expired = tInfo.expired;
+      state.customer.is_quota_exhausted = tInfo.expired;
+      renderSidebarHeaderAndListOnly();
+      if (!prevExpired && tInfo.expired && state.activeNav !== 'profile' && !canAccessTool(state.activeNav)) {
+        state.activeNav = 'profile';
+        renderSidebarAndStage();
+        setBanner('Masa aktif Trial 1 Hari Anda telah berakhir. Menu tools di sidebar kini terkunci.', 'warn');
+      }
+    }
+  }, 30000);
+
+  function renderSidebarAndStage() {
+    var c = state.customer;
+    if (!c) return;
+
+    renderSidebarHeaderAndListOnly();
+
+    if (state.activeNav !== 'profile' && !canAccessTool(state.activeNav)) {
+      state.activeNav = 'profile';
+      $('#nav-profile').className = 'side-btn active';
+    }
+
+    if (state.activeNav === 'profile') {
+      renderProfileStage();
+    } else {
+      var tools = (state.catalog && state.catalog.tools) || [];
+      var selectedTool = tools.filter(function (x) { return x.slug === state.activeNav; })[0];
+      if (selectedTool) renderToolStage(selectedTool);
+      else renderProfileStage();
+    }
+    notifyParentHeight();
+  }
+
+  function renderSidebarHeaderAndListOnly() {
+    var c = state.customer;
+    if (!c) return;
+    var tInfo = getRemainingTimeInfo(c);
+    var fill = $('#sb-timer-fill');
+    var tCard = $('#sb-timer-card');
+
+    $('#sb-timer-text').textContent = tInfo.label;
+    fill.style.width = tInfo.pct + '%';
+
+    if (tInfo.unlimited) {
+      tCard.className = 'timer-card';
+      fill.className = 'timer-fill';
+      $('#sb-timer-desc').textContent = 'Akses penuh tanpa batas waktu.';
+    } else if (tInfo.expired) {
+      tCard.className = 'timer-card expired-card';
+      fill.className = 'timer-fill expired';
+      $('#sb-timer-desc').textContent = 'Masa Trial 1 Hari telah berakhir (' + fmtDateId(c.expires_at) + '). Klik tool untuk upgrade.';
+    } else {
+      tCard.className = 'timer-card';
+      fill.className = 'timer-fill' + (tInfo.pct <= 25 ? ' warn' : '');
+      $('#sb-timer-desc').textContent = 'Berlaku s/d: ' + fmtDateId(c.expires_at);
+    }
+
+    var profBtn = $('#nav-profile');
+    profBtn.className = 'side-btn' + (state.activeNav === 'profile' ? ' active' : '');
+    profBtn.onclick = function () {
+      state.activeNav = 'profile';
+      renderSidebarAndStage();
+    };
+
+    var ul = $('#sb-tools-list');
+    var frag = document.createDocumentFragment();
+    var tools = (state.catalog && state.catalog.tools) || [];
+
+    tools.forEach(function (t) {
+      var li = el('li');
+      var allowed = canAccessTool(t.slug);
+      var owned = (c.purchased_list || []).indexOf(t.slug) !== -1;
+
+      var btn = el('button', null, 'side-btn');
+      btn.type = 'button';
+      if (!allowed) {
+        btn.classList.add('locked-tool');
+        btn.setAttribute('aria-disabled', 'true');
+      } else if (state.activeNav === t.slug) {
+        btn.classList.add('active');
+      }
+
+      btn.appendChild(el('span', t.title));
+      btn.appendChild(el('span', !allowed ? 'Terkunci' : (owned ? 'Milik Anda' : 'Aktif'), 'tool-badge'));
+
+      btn.addEventListener('click', function () {
+        if (!canAccessTool(t.slug)) {
+          state.activeNav = 'profile';
+          renderSidebarAndStage();
+          openUpgradeDialog(t);
+          return;
+        }
+        state.activeNav = t.slug;
+        renderSidebarAndStage();
+      });
+
+      li.appendChild(btn);
+      frag.appendChild(li);
+    });
+    ul.replaceChildren(frag);
+  }
+
+  function buildWaUpgradeUrl(toolObj) {
+    var c = state.customer || {};
+    var waNum = (state.catalog && state.catalog.admin_whatsapp) || '6281234567890';
+    var targetName = toolObj ? ('Tool "' + toolObj.title + '" (' + (toolObj.price_label || '') + ')') : 'Paket Pro All-Access';
+    var msg = 'Halo Admin Guru Faizal, masa aktif Trial 1 Hari saya sudah habis. Saya ingin meng-upgrade akun saya:\n\n'
+      + '- Nama: ' + (c.full_name || '-') + '\n'
+      + '- Email Login: ' + (c.email || '-') + '\n'
+      + '- Pilihan Upgrade: ' + targetName + '\n\n'
+      + 'Mohon info pembayarannya. Terima kasih!';
+    return 'https://wa.me/' + encodeURIComponent(waNum) + '?text=' + encodeURIComponent(msg);
+  }
+
+  function openUpgradeDialog(toolObj) {
+    var dlg = $('#dlg-upgrade');
+    var c = state.customer || {};
+    var toolTitle = toolObj ? toolObj.title : 'Galeri Tools';
+    $('#upg-message').textContent = 'Maaf ' + (c.full_name || '') + ', Anda tidak dapat membuka "' + toolTitle + '" karena masa aktif Trial 1 Hari (24 Jam) Anda telah berakhir pada ' + fmtDateId(c.expires_at) + '. Silakan upgrade akun untuk membuka kembali akses tools.';
+    $('#upg-price-box').textContent = (state.catalog && state.catalog.upgrade_price_info) || 'Upgrade ke Paket Pro All-Access atau beli tool satuan.';
+    $('#upg-wa-link').href = buildWaUpgradeUrl(toolObj);
+    if (dlg.showModal) dlg.showModal();
+    else dlg.setAttribute('open', 'open');
+  }
+
+  $('#btn-close-upgrade').addEventListener('click', function () {
+    var dlg = $('#dlg-upgrade');
+    if (dlg.close) dlg.close();
+    else dlg.removeAttribute('open');
+  });
+
+  function renderProfileStage() {
+    var stage = $('#stage-content');
+    var c = state.customer;
+    var tInfo = getRemainingTimeInfo(c);
+    var frag = document.createDocumentFragment();
+
+    if (tInfo.expired) {
+      var alertCard = el('div', null, 'card');
+      alertCard.style.borderColor = 'var(--red)';
+      alertCard.style.background = 'var(--badge-err)';
+      alertCard.appendChild(el('h3', 'Masa Aktif Trial 1 Hari Anda Telah Berakhir'));
+      alertCard.appendChild(el('p', 'Waktu uji coba gratis 24 jam Anda telah selesai pada ' + fmtDateId(c.expires_at) + '. Menu tools di sidebar kiri kini dinonaktifkan menjadi abu-abu. Silakan klik tombol di bawah untuk mengaktifkan paket berlangganan atau membeli tool satuan melalui WhatsApp Admin.'));
+      var waLink = el('a', 'Upgrade Akun via WhatsApp Admin Sekarang', 'wa-btn');
+      waLink.href = buildWaUpgradeUrl(null);
+      waLink.target = '_blank';
+      waLink.rel = 'noopener noreferrer';
+      alertCard.appendChild(waLink);
+      frag.appendChild(alertCard);
+    }
+
+    var statusCard = el('div', null, 'card');
+    statusCard.appendChild(el('h3', 'Status Masa Aktif & Akses Tools Anda'));
+    statusCard.appendChild(el('p', 'Berlaku sampai: ' + fmtDateId(c.expires_at) + ' (' + tInfo.label + ')', 'card-sub'));
+
+    var breakdown = c.usage_breakdown || {};
+    var tools = (state.catalog && state.catalog.tools) || [];
+    var ul = el('ul');
+    ul.style.margin = '0';
+    ul.style.paddingLeft = '18px';
+    tools.forEach(function (t) {
+      var cnt = Number(breakdown[t.slug]) || 0;
+      var owned = (c.purchased_list && c.purchased_list.indexOf(t.slug) !== -1) || c.tier === 'lifetime';
+      ul.appendChild(el('li', t.title + ' — dipakai ' + cnt + 'x ' + (owned ? '(Sudah Dibeli Permanen)' : '')));
+    });
+    statusCard.appendChild(ul);
+    frag.appendChild(statusCard);
+
+    var profCard = el('div', null, 'card');
+    profCard.appendChild(el('h3', 'Profil Saya'));
+    profCard.appendChild(el('p', 'Perbarui nama lengkap, nomor WhatsApp, atau password login Anda kapan saja.', 'card-sub'));
+
+    var form = el('form');
+    form.innerHTML = ''
+      + '<div class="form-grid">'
+      + '  <div class="field"><label for="pf-email">Username (Email - Tidak dapat diubah)</label><input id="pf-email" disabled></div>'
+      + '  <div class="field"><label for="pf-tier">Paket Saat Ini</label><input id="pf-tier" disabled></div>'
+      + '  <div class="field"><label for="pf-name">Nama Lengkap</label><input id="pf-name" required maxlength="100"></div>'
+      + '  <div class="field"><label for="pf-wa">Nomor WhatsApp</label><input id="pf-wa" required maxlength="25"></div>'
+      + '</div>'
+      + '<div class="field">'
+      + '  <label for="pf-pwd">Password Login Anda (Kombinasi huruf &amp; angka minimal 8 karakter)</label>'
+      + '  <input id="pf-pwd" type="text" required minlength="8">'
+      + '</div>'
+      + '<div class="btn-row">'
+      + '  <button type="submit" class="primary" id="btn-save-pf">Simpan Perubahan Profil</button>'
+      + '</div>';
+
+    form.querySelector('#pf-email').value = c.email || '';
+    form.querySelector('#pf-tier').value = String(c.tier || 'trial').toUpperCase();
+    form.querySelector('#pf-name').value = c.full_name || '';
+    form.querySelector('#pf-wa').value = c.whatsapp || '';
+    form.querySelector('#pf-pwd').value = c.password || '';
+
+    form.addEventListener('submit', async function (ev) {
+      ev.preventDefault();
+      var newPwd = form.querySelector('#pf-pwd').value;
+      if (!hasValidPasswordFormat(newPwd)) {
+        setBanner('Password wajib minimal 8 karakter dan mengandung kombinasi huruf serta angka.', 'error');
+        return;
+      }
+      var btn = form.querySelector('#btn-save-pf');
+      btn.disabled = true;
+      try {
+        var res = await api('customers.updateProfile', {
+          session_token: state.sessionToken,
+          full_name: form.querySelector('#pf-name').value.trim(),
+          whatsapp: form.querySelector('#pf-wa').value.trim(),
+          password: newPwd
+        }, { post: true });
+        state.customer = res.customer;
+        setBanner('Profil dan password Anda berhasil diperbarui.', 'ok');
+        renderSidebarAndStage();
+      } catch (err) {
+        setBanner(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    profCard.appendChild(form);
+    frag.appendChild(profCard);
+    stage.replaceChildren(frag);
+  }
+
+  async function verifyAndRunToolAction(toolObj, onSuccessRender, childWindow) {
+    if (!canAccessTool(toolObj.slug)) {
+      if (childWindow) childWindow.postMessage({ type: 'QUOTA_DENIED' }, '*');
+      state.activeNav = 'profile';
+      renderSidebarAndStage();
+      openUpgradeDialog(toolObj);
+      return;
+    }
+    setBanner('Memverifikasi masa aktif akun di server...', '');
+    try {
+      var res = await api('customers.useTool', {
+        session_token: state.sessionToken,
+        tool_slug: toolObj.slug
+      }, { post: true });
+      state.customer = res.customer;
+
+      if (typeof onSuccessRender === 'function') onSuccessRender();
+      if (childWindow) {
+        childWindow.postMessage({
+          type: 'QUOTA_APPROVED',
+          expires_at: state.customer.expires_at
+        }, '*');
+      }
+
+      renderSidebarHeaderAndListOnly();
+      setBanner('Akses terverifikasi! Tool berhasil dijalankan.', 'ok');
+    } catch (err) {
+      if (childWindow) childWindow.postMessage({ type: 'QUOTA_DENIED', message: err.message }, '*');
+      setBanner(err.message, 'error');
+      if (err.code === 'QUOTA_EXHAUSTED') {
+        state.customer.is_trial_expired = true;
+        state.activeNav = 'profile';
+        renderSidebarAndStage();
+        openUpgradeDialog(toolObj);
+      }
+    }
+  }
+
+  function renderToolStage(tool) {
+    var stage = $('#stage-content');
+    var card = el('div', null, 'card');
+
+    var head = el('div', null, 'tool-header');
+    var left = el('div');
+    left.appendChild(el('span', tool.category || 'Tool AI', 'pill ok'));
+    var h3 = el('h3', tool.title);
+    h3.style.marginTop = '6px';
+    left.appendChild(h3);
+    left.appendChild(el('p', tool.description || '', 'card-sub'));
+    head.appendChild(left);
+
+    var tInfo = getRemainingTimeInfo(state.customer);
+    head.appendChild(el('span', tInfo.label, 'pill warn'));
+    card.appendChild(head);
+
+    var bodyWrap = el('div');
+
+    if (tool.source_type === 'github_url' && tool.source_url) {
+      var ifr = document.createElement('iframe');
+      ifr.className = 'ext-iframe';
+      ifr.id = 'active-tool-frame';
+      var sep = tool.source_url.indexOf('?') === -1 ? '?' : '&';
+      ifr.src = tool.source_url + sep + 'sess=' + encodeURIComponent(state.sessionToken);
+      bodyWrap.appendChild(ifr);
+    } else if (tool.source_type === 'external_link' && tool.source_url) {
+      var pDesc = el('p', 'Tool ini berjalan di ruang kerja interaktif eksternal (Canvas Gemini). Klik tombol di bawah untuk memverifikasi masa aktif Anda dan membuka tool di tab baru.');
+      var openBtn = el('button', 'Verifikasi Akses & Buka Tool di Tab Baru', 'primary');
+      openBtn.type = 'button';
+      openBtn.addEventListener('click', function () {
+        verifyAndRunToolAction(tool, function () {
+          var sep = tool.source_url.indexOf('?') === -1 ? '?' : '&';
+          window.open(tool.source_url + sep + 'sess=' + encodeURIComponent(state.sessionToken), '_blank', 'noopener,noreferrer');
+        });
+      });
+      bodyWrap.appendChild(pDesc);
+      bodyWrap.appendChild(openBtn);
+    } else {
+      renderBuiltinToolBody(tool, bodyWrap);
+    }
+
+    card.appendChild(bodyWrap);
+    stage.replaceChildren(card);
+    notifyParentHeight();
+  }
+
+  window.addEventListener('message', function (ev) {
+    if (!ev.data) return;
+    if (ev.data.type === 'GF_THEME_SYNC') {
+      if (ev.data.theme === 'dark' || ev.data.theme === 'light') {
+        document.documentElement.setAttribute('data-theme', ev.data.theme);
+      }
+    } else if (ev.data.type === 'CONSUME_QUOTA') {
+      if (state.activeNav === 'profile') return;
+      var activeTool = (state.catalog.tools || []).filter(function (t) { return t.slug === state.activeNav; })[0];
+      if (activeTool) verifyAndRunToolAction(activeTool, null, ev.source);
+    } else if (ev.data.type === 'QUOTA_UPDATED' && ev.data.customer) {
+      state.customer = ev.data.customer;
+      renderSidebarHeaderAndListOnly();
+      if (!canAccessTool(state.activeNav)) {
+        state.activeNav = 'profile';
+        renderSidebarAndStage();
+      }
+    } else if (ev.data.type === 'TOOL_FRAME_RESIZE') {
+      var tf = $('#active-tool-frame');
+      var h = Number(ev.data.height);
+      if (tf && isFinite(h) && h > 200) {
+        tf.style.height = (h + 20) + 'px';
+        notifyParentHeight();
+      }
+    }
+  });
+
+  function renderBuiltinToolBody(tool, container) {
+    var outBox = el('div', 'Hasil proses tool akan tampil di sini.', 'result-box');
+
+    if (tool.slug === 'generator-prompt') {
+      container.innerHTML = ''
+        + '<div class="form-grid">'
+        + '  <div class="field"><label>Topik Materi / Mata Pelajaran</label><input id="t1-topic" placeholder="Contoh: IPAS Kelas 4 SD - Wujud Zat"></div>'
+        + '  <div class="field"><label>Target Capaian</label><input id="t1-aud" placeholder="Contoh: Modul Ajar Pembelajaran Mendalam"></div>'
+        + '</div>'
+        + '<button type="button" class="primary" id="t1-run">Susun Prompt AI Sekarang</button>';
+      container.appendChild(outBox);
+      container.querySelector('#t1-run').addEventListener('click', function () {
+        var top = container.querySelector('#t1-topic').value.trim() || 'Materi Pembelajaran';
+        var aud = container.querySelector('#t1-aud').value.trim() || 'Kurikulum Merdeka';
+        verifyAndRunToolAction(tool, function () {
+          outBox.textContent = 'PROMPT SIAP SALIN KE GEMINI:\n'
+            + '"Bertindaklah sebagai Pakar Kurikulum dan Penyusun Perangkat Ajar. Susunlah [' + aud + '] lengkap untuk materi [' + top + ']. Sertakan tujuan pembelajaran, langkah kegiatan inti (Mindful, Meaningful, Joyful), LKPD interaktif, serta 5 soal evaluasi HOTS beserta kunci jawabannya."';
+        });
+      });
+      return;
+    }
+
+    if (tool.slug === 'kalkulator-hpp') {
+      container.innerHTML = ''
+        + '<div class="form-grid">'
+        + '  <div class="field"><label>Modal Bahan &amp; Produksi (Rp)</label><input id="t2-cost" type="number" value="50000"></div>'
+        + '  <div class="field"><label>Target Margin Laba (%)</label><input id="t2-margin" type="number" value="35"></div>'
+        + '  <div class="field"><label>Potongan Admin Marketplace (%)</label><input id="t2-fee" type="number" value="6"></div>'
+        + '</div>'
+        + '<button type="button" class="primary" id="t2-run">Hitung Harga Jual Ideal</button>';
+      container.appendChild(outBox);
+      container.querySelector('#t2-run').addEventListener('click', function () {
+        var cost = Number(container.querySelector('#t2-cost').value) || 0;
+        var margin = Number(container.querySelector('#t2-margin').value) || 0;
+        var fee = Number(container.querySelector('#t2-fee').value) || 0;
+        verifyAndRunToolAction(tool, function () {
+          var targetNet = cost + (cost * (margin / 100));
+          var sellPrice = Math.ceil(targetNet / Math.max(1 - (fee / 100), 0.1));
+          var profit = Math.round(sellPrice * (1 - fee / 100) - cost);
+          outBox.textContent = 'HASIL PERHITUNGAN HPP:\n'
+            + '- Modal Dasar       : Rp ' + cost.toLocaleString('id-ID') + '\n'
+            + '- Harga Jual Ideal  : Rp ' + sellPrice.toLocaleString('id-ID') + '\n'
+            + '- Laba Bersih/Pcs   : Rp ' + profit.toLocaleString('id-ID');
+        });
+      });
+      return;
+    }
+
+    if (tool.slug === 'wa-link-rotator') {
+      container.innerHTML = ''
+        + '<div class="form-grid">'
+        + '  <div class="field"><label>Nomor WhatsApp Tujuan (628...)</label><input id="t3-wa" value="6281234567890"></div>'
+        + '  <div class="field"><label>Pesan Sapaan Otomatis</label><input id="t3-msg" value="Halo Pak, saya tertarik memesan akses toolsnya."></div>'
+        + '</div>'
+        + '<button type="button" class="primary" id="t3-run">Buat Link WhatsApp</button>';
+      container.appendChild(outBox);
+      container.querySelector('#t3-run').addEventListener('click', function () {
+        var num = container.querySelector('#t3-wa').value.replace(/[^\d]/g, '');
+        var msg = container.querySelector('#t3-msg').value.trim();
+        verifyAndRunToolAction(tool, function () {
+          var url = 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
+          outBox.textContent = 'LINK WHATSAPP:\n' + url + '\n\nKODE TOMBOL HTML:\n<a href="' + url + '" target="_blank" rel="noopener">Chat via WhatsApp</a>';
+        });
+      });
+      return;
+    }
+
+    if (tool.slug === 'rekap-data-cepat') {
+      container.innerHTML = ''
+        + '<div class="field"><label>Tempel Daftar Baris Teks (Satu item per baris)</label>'
+        + '<textarea id="t4-raw" placeholder="Budi Santoso\nSiti Aminah\nBudi Santoso"></textarea></div>'
+        + '<button type="button" class="primary" id="t4-run">Bersihkan Duplikat &amp; Urutkan</button>';
+      container.appendChild(outBox);
+      container.querySelector('#t4-run').addEventListener('click', function () {
+        var lines = container.querySelector('#t4-raw').value.split(/\r?\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+        verifyAndRunToolAction(tool, function () {
+          var uniq = Array.from(new Set(lines)).sort();
+          outBox.textContent = 'Hasil Bersih (' + uniq.length + ' baris unik dari ' + lines.length + ' baris awal):\n\n' + uniq.join('\n');
+        });
+      });
+      return;
+    }
+
+    container.innerHTML = ''
+      + '<div class="form-grid">'
+      + '  <div class="field"><label>Panjang Bahan Utama (cm)</label><input id="t5-bw" type="number" value="244"></div>'
+      + '  <div class="field"><label>Lebar Bahan Utama (cm)</label><input id="t5-bh" type="number" value="122"></div>'
+      + '  <div class="field"><label>Panjang Potongan (cm)</label><input id="t5-cw" type="number" value="29.7"></div>'
+      + '  <div class="field"><label>Lebar Potongan (cm)</label><input id="t5-ch" type="number" value="21"></div>'
+      + '</div>'
+      + '<button type="button" class="primary" id="t5-run">Hitung Hasil Potongan Maksimal</button>';
+    container.appendChild(outBox);
+    container.querySelector('#t5-run').addEventListener('click', function () {
+      var bw = Number(container.querySelector('#t5-bw').value) || 1;
+      var bh = Number(container.querySelector('#t5-bh').value) || 1;
+      var cw = Number(container.querySelector('#t5-cw').value) || 1;
+      var ch = Number(container.querySelector('#t5-ch').value) || 1;
+      verifyAndRunToolAction(tool, function () {
+        var optA = Math.floor(bw / cw) * Math.floor(bh / ch);
+        var optB = Math.floor(bw / ch) * Math.floor(bh / cw);
+        outBox.textContent = 'HASIL OPTIMASI POTONG:\n'
+          + '- Orientasi Normal   : ' + optA + ' lembar\n'
+          + '- Orientasi Diputar  : ' + optB + ' lembar\n'
+          + '- Rekomendasi Terbaik: ' + Math.max(optA, optB) + ' lembar per papan utama.';
+      });
+    });
+  }
+
+  // ===== PANEL ADMIN =====
+  function syncAdminView() {
+    if (state.adminToken) {
+      $('#adm-token').value = state.adminToken;
+      $('#btn-adm-logout').style.display = 'inline-flex';
+      $('#admin-main-area').style.display = 'block';
+      loadAdminDashboard();
+    } else {
+      $('#adm-token').value = '';
+      $('#btn-adm-logout').style.display = 'none';
+      $('#admin-main-area').style.display = 'none';
+    }
+  }
+
+  $('#form-admin-auth').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var tok = $('#adm-token').value.trim();
+    if (!tok) return;
+    state.adminToken = tok;
+    try { sessionStorage.setItem('gt_adm', tok); } catch (e) {}
+    syncAdminView();
+  });
+
+  $('#btn-adm-logout').addEventListener('click', function () {
+    state.adminToken = '';
+    try { sessionStorage.removeItem('gt_adm'); } catch (e) {}
+    syncAdminView();
+  });
+
+  async function loadAdminDashboard() {
+    if (!state.adminToken || !ensureApiConfigured()) return;
+    var custBox = $('#adm-customers-table');
+    custBox.replaceChildren(el('div', null, 'skeleton'), el('div', null, 'skeleton'));
+
+    try {
+      var data = await api('admin.dashboard', {
+        q: $('#adm-q').value.trim(),
+        filter: $('#adm-filter').value
+      }, { token: state.adminToken });
+
+      state.adminCustomers = data.customers || [];
+      state.adminTools = data.tools || [];
+      if (data.settings) {
+        $('#set-wa').value = data.settings.admin_whatsapp || '';
+        $('#set-price-info').value = data.settings.upgrade_price_info || '';
+        state.catalog.admin_whatsapp = data.settings.admin_whatsapp;
+        state.catalog.upgrade_price_info = data.settings.upgrade_price_info;
+      }
+
+      $('#adm-st-total').textContent = String(data.stats.total_customers || 0);
+      $('#adm-st-free').textContent = String(data.stats.trial_active || 0);
+      $('#adm-st-exhausted').textContent = String(data.stats.trial_expired || 0);
+      $('#adm-st-paid').textContent = String(data.stats.paid_members || 0);
+
+      renderAdminCustomersTable();
+      renderAdminToolsTable();
+      notifyParentHeight();
+    } catch (err) {
+      custBox.replaceChildren(el('p', err.message));
+      setBanner(err.message, 'error');
+    }
+  }
+
+  var admSearchTimer = null;
+  $('#adm-q').addEventListener('input', function () {
+    clearTimeout(admSearchTimer);
+    admSearchTimer = setTimeout(loadAdminDashboard, 300);
+  });
+  $('#adm-filter').addEventListener('change', loadAdminDashboard);
+  $('#btn-adm-reload').addEventListener('click', loadAdminDashboard);
+
+  function renderAdminCustomersTable() {
+    var box = $('#adm-customers-table');
+    if (!state.adminCustomers.length) {
+      box.replaceChildren(el('p', 'Belum ada data pelanggan yang sesuai filter.', 'card-sub'));
+      return;
+    }
+    var wrap = el('div', null, 'table-wrap');
+    var tbl = el('table');
+    var thead = el('thead');
+    var htr = el('tr');
+    ['Pelanggan & Kontak', 'Username & Password', 'Masa Aktif & Paket', 'Pembelian Tools', 'Aksi Admin'].forEach(function (h) {
+      htr.appendChild(el('th', h));
+    });
+    thead.appendChild(htr);
+    tbl.appendChild(thead);
+
+    var tbody = el('tbody');
+    state.adminCustomers.forEach(function (c) {
+      var tr = el('tr');
+
+      var td1 = el('td');
+      td1.appendChild(el('strong', c.full_name));
+      td1.appendChild(el('div', 'WA: ' + c.whatsapp, 'mono'));
+      if (c.notes) td1.appendChild(el('div', 'Catatan: ' + c.notes));
+      tr.appendChild(td1);
+
+      var td2 = el('td');
+      td2.appendChild(el('div', c.email, 'mono'));
+      td2.appendChild(el('div', 'Pass: ' + c.password, 'mono'));
+      tr.appendChild(td2);
+
+      var td3 = el('td');
+      var tInfo = getRemainingTimeInfo(c);
+      var pillCls = tInfo.expired ? 'err' : (tInfo.unlimited ? 'ok' : 'warn');
+      td3.appendChild(el('span', tInfo.label + ' (' + c.tier + ')', 'pill ' + pillCls));
+      td3.appendChild(el('div', 'Exp: ' + fmtDateId(c.expires_at), 'mono'));
+      tr.appendChild(td3);
+
+      var td4 = el('td');
+      td4.appendChild(el('div', c.purchased_tools || '(Ikut Masa Aktif Trial)', 'mono'));
+      tr.appendChild(td4);
+
+      var td5 = el('td');
+      var actRow = el('div', null, 'btn-row');
+      actRow.style.marginTop = '0';
+
+      var editBtn = el('button', 'Edit / Perpanjang', 'ghost-btn');
+      editBtn.type = 'button';
+      editBtn.addEventListener('click', function () { openAdminCustomerModal(c); });
+      actRow.appendChild(editBtn);
+
+      var delBtn = el('button', 'Hapus', 'ghost-btn');
+      delBtn.type = 'button';
+      delBtn.style.color = 'var(--red)';
+      delBtn.addEventListener('click', function () {
+        openConfirmModal('Hapus pelanggan "' + c.full_name + '" (' + c.email + ')?', async function () {
+          await api('admin.customers.delete', { id: c.id }, { token: state.adminToken });
+          await loadAdminDashboard();
+        });
+      });
+      actRow.appendChild(delBtn);
+
+      td5.appendChild(actRow);
+      tr.appendChild(td5);
+      tbody.appendChild(tr);
+    });
+
+    tbl.appendChild(tbody);
+    wrap.appendChild(tbl);
+    box.replaceChildren(wrap);
+  }
+
+  function renderAdminToolsTable() {
+    var box = $('#adm-tools-table');
+    var wrap = el('div', null, 'table-wrap');
+    var tbl = el('table');
+    var thead = el('thead');
+    var htr = el('tr');
+    ['Urutan & Nama Tool', 'Slug Kode', 'Path File GitHub / URL', 'Harga Satuan', 'Aksi'].forEach(function (h) {
+      htr.appendChild(el('th', h));
+    });
+    thead.appendChild(htr);
+    tbl.appendChild(thead);
+
+    var tbody = el('tbody');
+    state.adminTools.forEach(function (t) {
+      var tr = el('tr');
+      tr.appendChild(el('td', '#' + t.sort_order + ' - ' + t.title + (t.is_active ? '' : ' (Nonaktif)')));
+      tr.appendChild(el('td', t.slug, 'mono'));
+      tr.appendChild(el('td', t.source_type === 'builtin' ? 'Modul Bawaan (Built-in)' : t.source_url, 'mono'));
+      tr.appendChild(el('td', t.price_label || '-'));
+
+      var tdAct = el('td');
+      var row = el('div', null, 'btn-row');
+      row.style.marginTop = '0';
+      var ed = el('button', 'Edit Tool', 'ghost-btn');
+      ed.type = 'button';
+      ed.addEventListener('click', function () { openAdminToolModal(t); });
+      var dl = el('button', 'Hapus', 'ghost-btn');
+      dl.type = 'button';
+      dl.style.color = 'var(--red)';
+      dl.addEventListener('click', function () {
+        openConfirmModal('Hapus tool "' + t.title + '" dari katalog sidebar?', async function () {
+          await api('admin.tools.delete', { id: t.id }, { token: state.adminToken });
+          await loadAdminDashboard();
+        });
+      });
+      row.appendChild(ed);
+      row.appendChild(dl);
+      tdAct.appendChild(row);
+      tr.appendChild(tdAct);
+      tbody.appendChild(tr);
+    });
+
+    tbl.appendChild(tbody);
+    wrap.appendChild(tbl);
+    box.replaceChildren(wrap);
+  }
+
+  var dlgCust = $('#dlg-adm-cust');
+  function openAdminCustomerModal(c) {
+    state.expireNowFlag = false;
+    $('#mc-id').value = c ? c.id : '';
+    $('#dlg-cust-title').textContent = c ? 'Edit Pelanggan & Masa Aktif' : 'Tambah Pelanggan Baru';
+    $('#mc-name').value = c ? c.full_name : '';
+    $('#mc-email').value = c ? c.email : '';
+    $('#mc-wa').value = c ? c.whatsapp : '';
+    $('#mc-pwd').value = c ? c.password : '';
+    $('#mc-tier').value = c ? (c.tier === 'free' ? 'trial' : c.tier) : 'trial';
+    $('#mc-status').value = c ? c.status : 'active';
+    $('#mc-add-days').value = '';
+    $('#mc-purchased').value = c ? (c.purchased_tools || '') : '';
+    $('#mc-notes').value = c ? (c.notes || '') : '';
+    if (dlgCust.showModal) dlgCust.showModal();
+    else dlgCust.setAttribute('open', 'open');
+  }
+  function closeAdminCustomerModal() {
+    if (dlgCust.close) dlgCust.close();
+    else dlgCust.removeAttribute('open');
+  }
+  $('#btn-adm-add-cust').addEventListener('click', function () { openAdminCustomerModal(null); });
+  $('#btn-close-cust-dlg').addEventListener('click', closeAdminCustomerModal);
+  $('#btn-extend-1day').addEventListener('click', function () {
+    state.expireNowFlag = false;
+    $('#mc-add-days').value = '1';
+  });
+  $('#btn-expire-now').addEventListener('click', function () {
+    state.expireNowFlag = true;
+    $('#mc-add-days').value = '0';
+    $('#form-adm-cust').requestSubmit();
+  });
+
+  $('#form-adm-cust').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var pwd = $('#mc-pwd').value;
+    if (!hasValidPasswordFormat(pwd)) {
+      setBanner('Password pelanggan wajib minimal 8 karakter dengan kombinasi huruf dan angka.', 'error');
+      return;
+    }
+    var btn = $('#btn-save-cust');
+    btn.disabled = true;
+    try {
+      await api('admin.customers.save', {
+        id: $('#mc-id').value,
+        full_name: $('#mc-name').value.trim(),
+        email: $('#mc-email').value.trim(),
+        whatsapp: $('#mc-wa').value.trim(),
+        password: pwd,
+        tier: $('#mc-tier').value,
+        status: $('#mc-status').value,
+        add_days: Number($('#mc-add-days').value) || 0,
+        set_expire_now: state.expireNowFlag,
+        purchased_tools: $('#mc-purchased').value.trim(),
+        notes: $('#mc-notes').value.trim()
+      }, { token: state.adminToken });
+      closeAdminCustomerModal();
+      setBanner('Data pelanggan & masa aktif berhasil disimpan.', 'ok');
+      await loadAdminDashboard();
+    } catch (err) {
+      setBanner(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  var dlgTool = $('#dlg-adm-tool');
+  function openAdminToolModal(t) {
+    $('#mt-id').value = t ? t.id : '';
+    $('#dlg-tool-title').textContent = t ? 'Edit Tool di Katalog' : 'Tambah Tool Baru ke Sidebar';
+    $('#mt-title').value = t ? t.title : '';
+    $('#mt-slug').value = t ? t.slug : '';
+    $('#mt-cat').value = t ? t.category : 'Tools AI';
+    $('#mt-price').value = t ? t.price_label : 'Rp 35.000';
+    $('#mt-type').value = t ? t.source_type : 'github_url';
+    $('#mt-order').value = t ? String(t.sort_order || 1) : String(state.adminTools.length + 1);
+    $('#mt-url').value = t ? (t.source_url || '') : './tools/nama-tool.html';
+    $('#mt-desc').value = t ? (t.description || '') : '';
+    if (dlgTool.showModal) dlgTool.showModal();
+    else dlgTool.setAttribute('open', 'open');
+  }
+  function closeAdminToolModal() {
+    if (dlgTool.close) dlgTool.close();
+    else dlgTool.removeAttribute('open');
+  }
+  $('#btn-adm-add-tool').addEventListener('click', function () { openAdminToolModal(null); });
+  $('#btn-close-tool-dlg').addEventListener('click', closeAdminToolModal);
+
+  $('#form-adm-tool').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var btn = $('#btn-save-tool');
+    btn.disabled = true;
+    try {
+      await api('admin.tools.save', {
+        id: $('#mt-id').value,
+        title: $('#mt-title').value.trim(),
+        slug: $('#mt-slug').value.trim(),
+        category: $('#mt-cat').value.trim(),
+        price_label: $('#mt-price').value.trim(),
+        source_type: $('#mt-type').value,
+        sort_order: Number($('#mt-order').value) || 1,
+        source_url: $('#mt-url').value.trim(),
+        description: $('#mt-desc').value.trim(),
+        is_active: true
+      }, { token: state.adminToken });
+      closeAdminToolModal();
+      setBanner('Katalog tool berhasil diperbarui.', 'ok');
+      await loadAdminDashboard();
+    } catch (err) {
+      setBanner(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  $('#form-adm-settings').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var btn = $('#btn-save-settings');
+    btn.disabled = true;
+    try {
+      await api('admin.settings.save', {
+        admin_whatsapp: $('#set-wa').value.trim(),
+        upgrade_price_info: $('#set-price-info').value.trim()
+      }, { token: state.adminToken });
+      setBanner('Nomor WhatsApp Admin & teks upgrade berhasil disimpan.', 'ok');
+      await loadAdminDashboard();
+    } catch (err) {
+      setBanner(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  var dlgConf = $('#dlg-confirm');
+  function openConfirmModal(msg, onYes) {
+    $('#confirm-msg').textContent = msg;
+    state.confirmAction = onYes;
+    if (dlgConf.showModal) dlgConf.showModal();
+    else dlgConf.setAttribute('open', 'open');
+  }
+  function closeConfirmModal() {
+    state.confirmAction = null;
+    if (dlgConf.close) dlgConf.close();
+    else dlgConf.removeAttribute('open');
+  }
+  $('#btn-confirm-no').addEventListener('click', closeConfirmModal);
+  $('#btn-confirm-yes').addEventListener('click', async function () {
+    if (!state.confirmAction) return;
+    var btn = $('#btn-confirm-yes');
+    btn.disabled = true;
+    try {
+      await state.confirmAction();
+      closeConfirmModal();
+    } catch (err) {
+      setBanner(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  async function initApp() {
+    if (!ensureApiConfigured()) return;
+    if (state.sessionToken) {
+      setBanner('Memulihkan sesi pelanggan Anda...', '');
+      try {
+        var res = await api('customers.me', { session_token: state.sessionToken }, { post: true });
+        saveSessionAndEnter(res, '');
+        return;
+      } catch (e) {
+        state.sessionToken = '';
+        try { localStorage.removeItem('gt_sess'); } catch (x) {}
+        setBanner('', '');
+      }
+    }
+    switchMainView('portal');
+  }
+
+  initApp();
+})();
+</script>
+</body>
+</html>
